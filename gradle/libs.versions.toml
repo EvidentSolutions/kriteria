@@ -1,10 +1,39 @@
 [versions]
-kotlin = "2.2.0-Beta2"
-kotlinx-datetime = "0.6.1"
-hibernate = "6.6.13.Final"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
+kotlinx-datetime = "0.6.2"
+hibernate = "6.6.18.Final"
+kotlinpoet = "2.2.0"
+testcontainers = "1.21.1"
+postgresqlJdbc = "42.7.5"
+log4j = "2.24.3"
+junit = "5.10.1"
+truth = "1.4.4"
+dokka = "1.9.20"
+vanniktechMavenPublish = "0.32.0"
 
 [libraries]
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 hibernate-core = { module = "org.hibernate.orm:hibernate-core", version.ref = "hibernate" }
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
+kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
+ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+postgresql-jdbc = { module = "org.postgresql:postgresql", version.ref = "postgresqlJdbc" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
+dokka-gradlePlugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+vanniktechMavenPublish-gradlePlugin = { module = "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin", version.ref = "vanniktechMavenPublish" }
+
+[bundles]
+log4j = ["log4j-core", "log4j-slf4j"]
+testing = ["junit-jupiter-api", "truth"]
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }

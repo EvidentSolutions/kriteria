@@ -11,7 +11,7 @@ plugins {
 }
 
 include(":core")
-include(":hibernate")
+include(":integration-tests")
 include(":symbol-processor")
 
 rootProject.name = "kriteria"

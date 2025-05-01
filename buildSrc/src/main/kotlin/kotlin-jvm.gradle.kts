@@ -4,10 +4,15 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     kotlin("jvm")
+    id("org.jetbrains.dokka")
 }
 
 kotlin {
     jvmToolchain(21)
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
 
 tasks.withType<Test>().configureEach {
@@ -20,4 +25,8 @@ tasks.withType<Test>().configureEach {
             TestLogEvent.SKIPPED
         )
     }
+}
+
+dependencies {
+    testImplementation(kotlin("test"))
 }

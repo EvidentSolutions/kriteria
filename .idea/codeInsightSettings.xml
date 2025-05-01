@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaProjectCodeInsightSettings">
+    <excluded-names>
+      <name>com.google.common.truth.ExpectFailure</name>
+      <name>com.google.common.truth.Truth8</name>
+      <name>com.sun</name>
+      <name>java.beans</name>
+      <name>java.nio.file.Path</name>
+      <name>junit</name>
+      <name>org.hamcrest</name>
+      <name>org.hibernate.mapping</name>
+      <name>org.hibernate.sql</name>
+      <name>org.junit.Assert</name>
+      <name>org.junit.Ignore</name>
+      <name>org.junit.Test</name>
+      <name>org.junit.jupiter.api.Test</name>
+      <name>org.testcontainers.shaded</name>
+      <name>sun.jvm</name>
+      <name>sun.tools</name>
+    </excluded-names>
+  </component>
+</project>
