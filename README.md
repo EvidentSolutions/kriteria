@@ -39,7 +39,7 @@ For more examples, check the [integration tests](integration-tests/src/test/kotl
 ### Queries
 
 ```kotlin
-// Find all employees using a just predicate
+// Find all employees using just a predicate
 em.findAllByEntity(Employee, order = { asc(name) }) {
     it.department.name isEqualTo "Engineering"
 }
