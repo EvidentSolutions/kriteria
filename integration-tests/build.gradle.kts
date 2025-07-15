@@ -19,7 +19,6 @@ ksp {
 dependencies {
     implementation(project(":core"))
     implementation(libs.kotlin.reflect)
-    implementation(libs.kotlinx.datetime)
     implementation(libs.hibernate.core)
 
     kspTest(project(":symbol-processor"))

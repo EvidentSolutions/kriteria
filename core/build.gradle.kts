@@ -11,7 +11,6 @@ kotlin {
 
 dependencies {
     implementation(libs.kotlin.reflect)
-    implementation(libs.kotlinx.datetime)
     implementation(libs.hibernate.core)
 
     testImplementation(libs.bundles.testing)

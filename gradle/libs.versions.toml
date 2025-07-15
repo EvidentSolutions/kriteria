@@ -1,7 +1,6 @@
 [versions]
 kotlin = "2.2.0"
 ksp = "2.2.0-2.0.2"
-kotlinx-datetime = "0.6.2"
 hibernate = "6.6.18.Final"
 kotlinpoet = "2.2.0"
 testcontainers = "1.21.1"
@@ -15,7 +14,6 @@ vanniktechMavenPublish = "0.32.0"
 [libraries]
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 hibernate-core = { module = "org.hibernate.orm:hibernate-core", version.ref = "hibernate" }
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
