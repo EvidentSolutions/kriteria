@@ -24,5 +24,9 @@ class Employee(
     @ManyToMany
     val friends = setOf<Employee>()
 
+    @Suppress("unused") // for now, this is only present to check that processor doesn't choke on it
+    @OneToMany
+    val projectsByName = mutableMapOf<String, Project>()
+
     companion object : EntityMeta<Employee, Int>(Employee::id)
 }

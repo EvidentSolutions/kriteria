@@ -88,11 +88,14 @@ private class CriteriaMetaProcessor(
 
         val resolvedType = property.type.resolve()
         val kind = when {
+            property.hasAnnotation<ManyToOne>() -> PropertyKind.MANY_TO_ONE
+
             property.hasAnnotation<ManyToMany>() ->
                 if (resolveMapParameters(resolvedType) != null) PropertyKind.MANY_TO_MANY_MAP else null
 
-            property.hasAnnotation<ManyToOne>() -> PropertyKind.MANY_TO_ONE
-            property.hasAnnotation<OneToMany>() -> PropertyKind.ONE_TO_MANY
+            property.hasAnnotation<OneToMany>() ->
+                if (resolveCollectionElementType(resolvedType) != null) PropertyKind.ONE_TO_MANY else null
+
             else -> PropertyKind.BASIC
         } ?: return
 
@@ -154,7 +157,7 @@ private enum class PropertyKind(val resolverFunction: String) {
         BASIC -> basicChildType.parameterizedBy(type.makeNotNullable().toTypeName())
         MANY_TO_ONE -> manyToOneChildType.parameterizedBy(type.makeNotNullable().toTypeName())
         ONE_TO_MANY -> {
-            val elementType = resolveCollectionElementType(type.makeNotNullable())
+            val elementType = resolveCollectionElementType(type) ?: throw ProcessingException("expected collection type, got: $type")
             collectionReferenceType.parameterizedBy(elementType)
         }
 
@@ -183,7 +186,9 @@ private enum class PropertyKind(val resolverFunction: String) {
 }
 
 context(knownTypes: KnownTypes)
-private fun resolveCollectionElementType(type: KSType): TypeName {
+private fun resolveCollectionElementType(type: KSType): TypeName? {
+    val type = type.makeNotNullable()
+
     if (knownTypes.collectionType.asStarProjectedType().isAssignableFrom(type)) {
         if (type.arguments.size != 1)
             throw ProcessingException("expected collection type with 1 argument, got: $type")
@@ -191,7 +196,7 @@ private fun resolveCollectionElementType(type: KSType): TypeName {
         return type.arguments.first().type!!.resolve().toTypeName()
     }
 
-    throw ProcessingException("expected collection type, got: $type")
+    return null
 }
 
 context(knownTypes: KnownTypes)
