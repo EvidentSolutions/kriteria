@@ -29,7 +29,7 @@ private class CriteriaMetaProcessor(
     private val optInType = ClassName("kotlin", "OptIn")
     private val delicateApiType = DelicateCriteriaApi::class.asClassName()
 
-    override fun process(resolver: Resolver): List<KSAnnotated> = context(resolver) {
+    override fun process(resolver: Resolver): List<KSAnnotated> = context(KnownTypes(resolver)) {
         val entityClasses = resolver.getClassesWithAnnotation<Entity>()
         val mappedSuperclassClasses = resolver.getClassesWithAnnotation<MappedSuperclass>()
         val embeddableClasses = resolver.getClassesWithAnnotation<Embeddable>()
@@ -49,7 +49,7 @@ private class CriteriaMetaProcessor(
         return emptyList()
     }
 
-    context(resolver: Resolver)
+    context(knownTypes: KnownTypes)
     private fun generateCriteriaMeta(classDeclaration: KSClassDeclaration): FileSpec {
         val className = classDeclaration.simpleName.asString()
         val file = FileSpec.builder(packageName, className + "CriteriaMeta")
@@ -77,7 +77,7 @@ private class CriteriaMetaProcessor(
         return file.build()
     }
 
-    context(resolver: Resolver)
+    context(knownTypes: KnownTypes)
     private fun processProperty(
         classDeclaration: KSClassDeclaration,
         property: KSPropertyDeclaration,
@@ -86,24 +86,28 @@ private class CriteriaMetaProcessor(
         if (!property.validate()) return
         if (!property.isPersistentProperty) return
 
+        val resolvedType = property.type.resolve()
         val kind = when {
-            property.hasAnnotation<ManyToMany>() -> PropertyKind.MANY_TO_MANY
+            property.hasAnnotation<ManyToMany>() ->
+                if (resolveMapParameters(resolvedType) != null) PropertyKind.MANY_TO_MANY_MAP else null
+
             property.hasAnnotation<ManyToOne>() -> PropertyKind.MANY_TO_ONE
             property.hasAnnotation<OneToMany>() -> PropertyKind.ONE_TO_MANY
             else -> PropertyKind.BASIC
-        }
+        } ?: return
 
-        processProperty(classDeclaration, property, file, kind)
+        processProperty(classDeclaration, property, resolvedType, file, kind)
 
         // Process many-to-one properties both normally and as basic properties
         if (kind == PropertyKind.MANY_TO_ONE)
-            processProperty(classDeclaration, property, file, PropertyKind.BASIC)
+            processProperty(classDeclaration, property, resolvedType, file, PropertyKind.BASIC)
     }
 
-    context(resolver: Resolver)
+    context(knownTypes: KnownTypes)
     private fun processProperty(
         classDeclaration: KSClassDeclaration,
         property: KSPropertyDeclaration,
+        resolvedType: KSType,
         file: FileSpec.Builder,
         kind: PropertyKind,
     ) {
@@ -112,7 +116,7 @@ private class CriteriaMetaProcessor(
 
         val visibility = if (classDeclaration.isPublic()) KModifier.PUBLIC else KModifier.INTERNAL
 
-        val propertyType = kind.createPropertyType(property.type.resolve())
+        val propertyType = kind.createPropertyType(resolvedType)
         val receiverType = kind.createReceiverType(classDeclaration)
 
         val property = PropertySpec.builder(
@@ -143,9 +147,9 @@ private enum class PropertyKind(val resolverFunction: String) {
     BASIC("getBasicUnsafe"),
     MANY_TO_ONE("getManyToOneUnsafe"),
     ONE_TO_MANY("getCollectionReferenceUnsafe"),
-    MANY_TO_MANY("getMapReferenceUnsafe");
+    MANY_TO_MANY_MAP("getMapReferenceUnsafe");
 
-    context(resolver: Resolver)
+    context(knownTypes: KnownTypes)
     fun createPropertyType(type: KSType): TypeName = when (this) {
         BASIC -> basicChildType.parameterizedBy(type.makeNotNullable().toTypeName())
         MANY_TO_ONE -> manyToOneChildType.parameterizedBy(type.makeNotNullable().toTypeName())
@@ -154,8 +158,8 @@ private enum class PropertyKind(val resolverFunction: String) {
             collectionReferenceType.parameterizedBy(elementType)
         }
 
-        MANY_TO_MANY -> {
-            val (key, value) = resolveMapParameters(type.makeNotNullable())
+        MANY_TO_MANY_MAP -> {
+            val (key, value) = resolveMapParameters(type) ?: throw ProcessingException("expected map type, got: $type")
             mapReferenceType.parameterizedBy(key, value)
         }
     }
@@ -164,32 +168,8 @@ private enum class PropertyKind(val resolverFunction: String) {
         val typeName = WildcardTypeName.producerOf(entityClass.asType(emptyList()).toTypeName())
         return when (this) {
             BASIC -> pathType.parameterizedBy(typeName)
-            MANY_TO_ONE, ONE_TO_MANY, MANY_TO_MANY -> fromType.parameterizedBy(STAR, typeName)
+            MANY_TO_ONE, ONE_TO_MANY, MANY_TO_MANY_MAP -> fromType.parameterizedBy(STAR, typeName)
         }
-    }
-
-    context(resolver: Resolver)
-    private fun resolveCollectionElementType(type: KSType): TypeName {
-        val collectionType = resolver.getClassDeclarationByName<Collection<*>>()!!
-
-        if (collectionType.asStarProjectedType().isAssignableFrom(type))
-            return type.arguments.first().type!!.resolve().toTypeName()
-
-        throw ProcessingException("expected collection type, got: $type")
-    }
-
-    context(resolver: Resolver)
-    private fun resolveMapParameters(type: KSType): Pair<TypeName, TypeName> {
-        val mapType = resolver.getClassDeclarationByName<Map<*, *>>()!!
-
-        if (mapType.asStarProjectedType().isAssignableFrom(type)) {
-            check(type.arguments.size == 2) { "expected map type with 2 arguments, got: $type" }
-
-            val (key, value) = type.arguments.map { it.type!!.resolve().toTypeName() }
-            return key to value
-        }
-
-        throw ProcessingException("expected map type, got: $type")
     }
 
     companion object {
@@ -201,6 +181,41 @@ private enum class PropertyKind(val resolverFunction: String) {
         private val mapReferenceType = KrMapRef::class.asClassName()
     }
 }
+
+context(knownTypes: KnownTypes)
+private fun resolveCollectionElementType(type: KSType): TypeName {
+    if (knownTypes.collectionType.asStarProjectedType().isAssignableFrom(type)) {
+        if (type.arguments.size != 1)
+            throw ProcessingException("expected collection type with 1 argument, got: $type")
+
+        return type.arguments.first().type!!.resolve().toTypeName()
+    }
+
+    throw ProcessingException("expected collection type, got: $type")
+}
+
+context(knownTypes: KnownTypes)
+private fun resolveMapParameters(type: KSType): Pair<TypeName, TypeName>? {
+    val type = type.makeNotNullable()
+
+    if (knownTypes.mapType.asStarProjectedType().isAssignableFrom(type)) {
+        if (type.arguments.size != 2)
+            throw ProcessingException("expected map type with 2 arguments, got: $type")
+
+        val (key, value) = type.arguments.map { it.type!!.resolve().toTypeName() }
+        return key to value
+    }
+
+    return null
+}
+
+private class KnownTypes(resolver: Resolver) {
+    val collectionType = resolver.findRequiredClassDeclarationByName<Collection<*>>()
+    val mapType = resolver.findRequiredClassDeclarationByName<Map<*, *>>()
+}
+
+private inline fun <reified T> Resolver.findRequiredClassDeclarationByName(): KSClassDeclaration =
+    getClassDeclarationByName<T>() ?: throw ProcessingException("Failed to resolve class ${T::class.qualifiedName}")
 
 class CriteriaMetaProcessorProvider : SymbolProcessorProvider {
 
