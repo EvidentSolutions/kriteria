@@ -12,14 +12,14 @@ public operator fun <T : Comparable<T>> KrExpression<T>.rangeUntil(end: KrExpres
 
 /** Represents a range with inclusive start and end bounds */
 public class InclusiveExpressionRange<T : Comparable<T>> internal constructor(
-    internal val start: KrExpression<T>,
-    internal val endInclusive: KrExpression<T>,
+    public val start: KrExpression<T>,
+    public val endInclusive: KrExpression<T>,
 )
 
 /** Represents a range with inclusive start and exclusive end bound */
 public class ExclusiveExpressionRange<T : Comparable<T>> internal constructor(
-    internal val start: KrExpression<T>,
-    internal val endExclusive: KrExpression<T>,
+    public val start: KrExpression<T>,
+    public val endExclusive: KrExpression<T>,
 )
 
 /** Checks if this value is within the given inclusive range */
