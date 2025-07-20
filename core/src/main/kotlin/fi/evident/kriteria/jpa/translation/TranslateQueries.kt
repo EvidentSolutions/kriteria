@@ -24,7 +24,6 @@ internal fun <T : Any> translateQuery(
         for (join in query.roots.joins)
             translateJoin(join)
 
-        println(query.selection)
         result.select(query.selection.translateSelection())
         result.distinct(query.distinct)
 
