@@ -16,7 +16,7 @@ val javadocJar by tasks.registering(Jar::class) {
 }
 
 mavenPublishing {
-    publishToMavenCentral()
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
     coordinates(
