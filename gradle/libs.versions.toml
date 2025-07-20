@@ -9,7 +9,7 @@ log4j = "2.24.3"
 junit = "5.10.1"
 truth = "1.4.4"
 dokka = "1.9.20"
-vanniktechMavenPublish = "0.32.0"
+vanniktechMavenPublish = "0.34.0"
 
 [libraries]
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

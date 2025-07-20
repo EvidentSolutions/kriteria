@@ -1,7 +1,5 @@
 package buildsrc.convention
 
-import com.vanniktech.maven.publish.SonatypeHost
-
 plugins {
     id("buildsrc.convention.kotlin-jvm")
     id("com.vanniktech.maven.publish")
@@ -18,7 +16,7 @@ val javadocJar by tasks.registering(Jar::class) {
 }
 
 mavenPublishing {
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral()
     signAllPublications()
 
     coordinates(
