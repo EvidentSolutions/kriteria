@@ -92,10 +92,18 @@ private class CriteriaMetaProcessor(
             property.hasAnnotation<ManyToOne>() -> PropertyKind.MANY_TO_ONE
 
             property.hasAnnotation<ManyToMany>() ->
-                if (resolveMapParameters(resolvedType) != null) PropertyKind.MANY_TO_MANY_MAP else null
+                when {
+                    resolveCollectionElementType(resolvedType) != null -> PropertyKind.MANY_TO_MANY
+                    resolveMapParameters(resolvedType) != null -> PropertyKind.MANY_TO_MANY_MAP
+                    else -> null
+                }
 
             property.hasAnnotation<OneToMany>() ->
-                if (resolveCollectionElementType(resolvedType) != null) PropertyKind.ONE_TO_MANY else null
+                when {
+                    resolveCollectionElementType(resolvedType) != null -> PropertyKind.ONE_TO_MANY
+                    resolveMapParameters(resolvedType) != null -> PropertyKind.ONE_TO_MANY_MAP
+                    else -> null
+                }
 
             else -> PropertyKind.BASIC
         } ?: return
@@ -152,7 +160,9 @@ private enum class PropertyKind(val resolverFunction: String) {
     MANY_TO_ONE("getManyToOneUnsafe"),
     ONE_TO_ONE("getOneToOneUnsafe"),
     ONE_TO_MANY("getCollectionReferenceUnsafe"),
-    MANY_TO_MANY_MAP("getMapReferenceUnsafe"); // TODO: support MANY_TO_MANY sets and
+    ONE_TO_MANY_MAP("getMapReferenceUnsafe"),
+    MANY_TO_MANY("getCollectionReferenceUnsafe"),
+    MANY_TO_MANY_MAP("getMapReferenceUnsafe");
 
     context(knownTypes: KnownTypes)
     fun createPropertyType(type: KSType): TypeName = when (this) {
@@ -163,7 +173,14 @@ private enum class PropertyKind(val resolverFunction: String) {
             val elementType = resolveCollectionElementType(type) ?: throw ProcessingException("expected collection type, got: $type")
             collectionReferenceType.parameterizedBy(elementType)
         }
-
+        MANY_TO_MANY -> {
+            val elementType = resolveCollectionElementType(type) ?: throw ProcessingException("expected collection type, got: $type")
+            collectionReferenceType.parameterizedBy(elementType)
+        }
+        ONE_TO_MANY_MAP -> {
+            val (key, value) = resolveMapParameters(type) ?: throw ProcessingException("expected map type, got: $type")
+            mapReferenceType.parameterizedBy(key, value)
+        }
         MANY_TO_MANY_MAP -> {
             val (key, value) = resolveMapParameters(type) ?: throw ProcessingException("expected map type, got: $type")
             mapReferenceType.parameterizedBy(key, value)
@@ -172,10 +189,7 @@ private enum class PropertyKind(val resolverFunction: String) {
 
     fun createReceiverType(entityClass: KSClassDeclaration): TypeName {
         val typeName = WildcardTypeName.producerOf(entityClass.asType(emptyList()).toTypeName())
-        return when (this) {
-            BASIC -> pathType.parameterizedBy(typeName)
-            ONE_TO_ONE, MANY_TO_ONE, ONE_TO_MANY, MANY_TO_MANY_MAP -> fromType.parameterizedBy(STAR, typeName)
-        }
+        return if (this == BASIC) pathType.parameterizedBy(typeName) else fromType.parameterizedBy(STAR, typeName)
     }
 
     companion object {
