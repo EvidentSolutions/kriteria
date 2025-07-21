@@ -170,6 +170,7 @@ public class KrSetJoin<X, Y> internal constructor(
     internal val joinParent: KrFrom<*, out X>,
     internal val joinProperty: String,
     internal val joinType: KrJoinType,
+    internal val joinFetch: Boolean,
 ) : KrFrom<X, Y>(), KrAnyJoin<X, Y> {
     override fun toString(): String = "$joinParent.$joinProperty"
 }

@@ -106,6 +106,28 @@ class JoinTest(private val db: DatabaseContext, private val data: DefaultTestDat
 
             assertThat(employeeIds).containsExactlyElementsIn(allEmployeeIds)
         }
+
+        @Test
+        fun `set joins`() = transactionalTest(db) {
+            val employeeIds = em.findAll<Department> {
+                val d = from(Department)
+                fetchSet(d.employees)
+                select(d)
+            }.map { it.id }
+
+            assertThat(employeeIds).containsExactlyElementsIn(data.departments.filter { it.employees.isNotEmpty() }.map { it.id})
+        }
+
+        @Test
+        fun `optional set joins`() = transactionalTest(db) {
+            val employeeIds = em.findAll<Department> {
+                val d = from(Department)
+                fetchSetOptional(d.employees)
+                select(d)
+            }.map { it.id }
+
+            assertThat(employeeIds).containsExactlyElementsIn(data.departments.map { it.id})
+        }
     }
 
     @Test

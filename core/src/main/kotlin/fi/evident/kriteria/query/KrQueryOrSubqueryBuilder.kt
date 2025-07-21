@@ -143,28 +143,28 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
      */
     context(_: KrExpressionContext)
     public fun <Y> innerJoinSet(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
-        joinSet(path, INNER)
+        joinSet(path, INNER, fetch = false)
 
     /**
      * Creates a left join on the specified collection relationship.
      */
     context(_: KrExpressionContext)
     public fun <Y> leftJoinSet(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
-        joinSet(path, LEFT)
+        joinSet(path, LEFT, fetch = false)
 
     /**
      * Creates a right join on the specified collection relationship.
      */
     context(_: KrExpressionContext)
     public fun <Y> rightJoinSet(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
-        joinSet(path, RIGHT)
+        joinSet(path, RIGHT, fetch = false)
 
     /**
      * Creates a specified join on the given collection relationship.
      */
     context(_: KrExpressionContext)
-    private fun <Y> joinSet(path: KrCollectionRef<Y>, joinType: KrJoinType): KrSetJoin<*, Y> =
-        roots.newSetJoin(path.childParent, path.childProperty, joinType)
+    internal fun <Y> joinSet(path: KrCollectionRef<Y>, joinType: KrJoinType, fetch: Boolean): KrSetJoin<*, Y> =
+        roots.newSetJoin(path.childParent, path.childProperty, joinType, fetch = fetch)
 
     /**
      * Creates an inner join on the specified map relationship.

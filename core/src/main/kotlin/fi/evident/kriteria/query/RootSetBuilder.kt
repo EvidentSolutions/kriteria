@@ -32,9 +32,10 @@ internal class RootSetBuilder {
     fun <X, Y> newSetJoin(
         parent: KrFrom<*, out X>,
         name: String,
-        joinType: KrJoinType
+        joinType: KrJoinType,
+        fetch: Boolean,
     ): KrSetJoin<*, Y> {
-        val join = KrSetJoin<X, Y>(parent, name, joinType)
+        val join = KrSetJoin<X, Y>(parent, name, joinType, fetch)
         joins += join
         return join
     }

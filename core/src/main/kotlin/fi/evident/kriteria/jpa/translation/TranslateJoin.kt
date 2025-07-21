@@ -54,7 +54,15 @@ private fun <X, Y : Any> translatePredicateJoin(join: KrPredicateJoin<X, Y>) {
 context(pathCache: PathCache)
 private fun <X, Y> translateSetJoin(join: KrSetJoin<X, Y>) {
     val parent = pathCache.resolveFrom(join.joinParent)
-    val result = parent.joinSet<X, Y>(join.joinProperty, join.joinType.translate())
+    val type = join.joinType.translate()
+
+    val result = if (join.joinFetch) {
+        @Suppress("UNCHECKED_CAST")
+        parent.fetch<X, Y>(join.joinProperty, type) as Join<X, Y>
+    } else {
+        parent.joinSet(join.joinProperty, type)
+    }
+
     pathCache.addJoin(join, result)
 }
 

@@ -33,6 +33,20 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
         join(path, KrJoinType.LEFT, fetch = true)
 
     /**
+     * Create a fetch join to the specified attribute using an inner join.
+     */
+    context(_: KrExpressionContext)
+    public fun <Y> fetchSet(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
+        joinSet(path, KrJoinType.INNER, fetch = true)
+
+    /**
+     * Create a fetch join to the specified attribute using a left join.
+     */
+    context(_: KrExpressionContext)
+    public fun <Y> fetchSetOptional(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
+        joinSet(path, KrJoinType.LEFT, fetch = true)
+
+    /**
      * Sets the ordering for this query.
      *
      * It is an error to call this multiple times.
