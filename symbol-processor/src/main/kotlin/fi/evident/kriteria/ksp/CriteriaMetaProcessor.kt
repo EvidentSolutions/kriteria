@@ -88,6 +88,7 @@ private class CriteriaMetaProcessor(
 
         val resolvedType = property.type.resolve()
         val kind = when {
+            property.hasAnnotation<OneToOne>() -> PropertyKind.ONE_TO_ONE
             property.hasAnnotation<ManyToOne>() -> PropertyKind.MANY_TO_ONE
 
             property.hasAnnotation<ManyToMany>() ->
@@ -101,8 +102,8 @@ private class CriteriaMetaProcessor(
 
         processProperty(classDeclaration, property, resolvedType, file, kind)
 
-        // Process many-to-one properties both normally and as basic properties
-        if (kind == PropertyKind.MANY_TO_ONE)
+        // Process many-to-one and one-to-one properties both normally and as basic properties
+        if (kind == PropertyKind.MANY_TO_ONE || kind == PropertyKind.ONE_TO_ONE)
             processProperty(classDeclaration, property, resolvedType, file, PropertyKind.BASIC)
     }
 
@@ -149,13 +150,15 @@ private class CriteriaMetaProcessor(
 private enum class PropertyKind(val resolverFunction: String) {
     BASIC("getBasicUnsafe"),
     MANY_TO_ONE("getManyToOneUnsafe"),
+    ONE_TO_ONE("getOneToOneUnsafe"),
     ONE_TO_MANY("getCollectionReferenceUnsafe"),
-    MANY_TO_MANY_MAP("getMapReferenceUnsafe");
+    MANY_TO_MANY_MAP("getMapReferenceUnsafe"); // TODO: support MANY_TO_MANY sets and
 
     context(knownTypes: KnownTypes)
     fun createPropertyType(type: KSType): TypeName = when (this) {
         BASIC -> basicChildType.parameterizedBy(type.makeNotNullable().toTypeName())
         MANY_TO_ONE -> manyToOneChildType.parameterizedBy(type.makeNotNullable().toTypeName())
+        ONE_TO_ONE -> oneToOneChildType.parameterizedBy(type.makeNotNullable().toTypeName())
         ONE_TO_MANY -> {
             val elementType = resolveCollectionElementType(type) ?: throw ProcessingException("expected collection type, got: $type")
             collectionReferenceType.parameterizedBy(elementType)
@@ -171,7 +174,7 @@ private enum class PropertyKind(val resolverFunction: String) {
         val typeName = WildcardTypeName.producerOf(entityClass.asType(emptyList()).toTypeName())
         return when (this) {
             BASIC -> pathType.parameterizedBy(typeName)
-            MANY_TO_ONE, ONE_TO_MANY, MANY_TO_MANY_MAP -> fromType.parameterizedBy(STAR, typeName)
+            ONE_TO_ONE, MANY_TO_ONE, ONE_TO_MANY, MANY_TO_MANY_MAP -> fromType.parameterizedBy(STAR, typeName)
         }
     }
 
@@ -180,6 +183,7 @@ private enum class PropertyKind(val resolverFunction: String) {
         private val fromType = KrFrom::class.asClassName()
         private val basicChildType = KrPropertyRef::class.asClassName()
         private val manyToOneChildType = KrManyToOneRef::class.asClassName()
+        private val oneToOneChildType = KrOneToOneRef::class.asClassName()
         private val collectionReferenceType = KrCollectionRef::class.asClassName()
         private val mapReferenceType = KrMapRef::class.asClassName()
     }

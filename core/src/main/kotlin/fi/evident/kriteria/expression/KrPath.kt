@@ -31,8 +31,8 @@ public sealed class KrPath<T>() : KrExpression<T>() {
 /** Represents a path to a basic (non-entity) property. */
 @ConsistentCopyVisibility
 public data class KrPropertyRef<T> internal constructor(
-    val childParent: KrPath<*>,
-    val childProperty: String
+    internal val childParent: KrPath<*>,
+    internal val childProperty: String
 ) : KrPath<T>() {
     override fun toString(): String = "$childParent.$childProperty"
 }
@@ -40,8 +40,17 @@ public data class KrPropertyRef<T> internal constructor(
 /** Represents a path to a many-to-one relationship property. */
 @ConsistentCopyVisibility
 public data class KrManyToOneRef<T> internal constructor(
-    val childParent: KrFrom<*, *>,
-    val childProperty: String
+    internal val childParent: KrFrom<*, *>,
+    internal val childProperty: String
+) : KrPath<T>() {
+    override fun toString(): String = "$childParent.$childProperty"
+}
+
+/** Represents a path to a many-to-one relationship property. */
+@ConsistentCopyVisibility
+public data class KrOneToOneRef<T> internal constructor(
+    internal val childParent: KrFrom<*, *>,
+    internal val childProperty: String
 ) : KrPath<T>() {
     override fun toString(): String = "$childParent.$childProperty"
 }
@@ -91,6 +100,10 @@ public sealed class KrFrom<X, Y> : KrPath<Y>() {
     public fun <T : Any> getManyToOne(property: KProperty1<out Y, T?>): KrManyToOneRef<T> =
         getManyToOneUnsafe(property.name)
 
+    /** Gets a one-to-one relationship property from this path. */
+    public fun <T : Any> getOneToOne(property: KProperty1<out Y, T?>): KrOneToOneRef<T> =
+        getOneToOneUnsafe(property.name)
+
     /**
      * Gets a many-to-one relationship property from this path using the property name.
      *
@@ -100,6 +113,16 @@ public sealed class KrFrom<X, Y> : KrPath<Y>() {
      */
     @DelicateCriteriaApi
     public fun <T> getManyToOneUnsafe(name: String): KrManyToOneRef<T> = KrManyToOneRef(this, name)
+
+    /**
+     * Gets a one-to-one relationship property from this path using the property name.
+     *
+     * This is a low-level API that should be used with caution. It does not
+     * verify that the property actually exists or has a correct type. Prefer
+     * using the generated entity model or [getOneToOne] when possible.
+     */
+    @DelicateCriteriaApi
+    public fun <T> getOneToOneUnsafe(name: String): KrOneToOneRef<T> = KrOneToOneRef(this, name)
 }
 
 /** Represents the root of a query path. */

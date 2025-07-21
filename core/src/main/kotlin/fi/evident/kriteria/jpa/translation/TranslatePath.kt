@@ -24,4 +24,7 @@ internal fun <T> KrPath<T>.translatePath(): Path<T> = when (this) {
     is KrManyToOneRef -> ctx.pathCache.getOrPutManyToOne(this) {
         childParent.translatePath().get(childProperty)
     }
+    is KrOneToOneRef -> ctx.pathCache.getOrPutOneToOne(this) {
+        childParent.translatePath().get(childProperty)
+    }
 }

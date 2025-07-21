@@ -13,6 +13,7 @@ internal class PathCache private constructor() {
 
     private val roots = mutableMapOf<KrRoot<*>, Path<*>>()
     private val manyToOneRefs = mutableMapOf<KrManyToOneRef<*>, Path<*>>()
+    private val oneToOneRefs = mutableMapOf<KrOneToOneRef<*>, Path<*>>()
     private val propertyRefs = mutableMapOf<KrPropertyRef<*>, Path<*>>()
     private val joins = mutableMapOf<KrAnyJoin<*, *>, From<*, *>>()
 
@@ -28,6 +29,9 @@ internal class PathCache private constructor() {
 
     fun <T> getOrPutManyToOne(path: KrManyToOneRef<T>, func: () -> Path<T>): Path<T> =
         manyToOneRefs.getOrPut(path) { func() }.castPath()
+
+    fun <T> getOrPutOneToOne(path: KrOneToOneRef<T>, func: () -> Path<T>): Path<T> =
+        oneToOneRefs.getOrPut(path) { func() }.castPath()
 
     fun <T> getOrPutProperty(path: KrPropertyRef<T>, func: () -> Path<T>): Path<T> =
         propertyRefs.getOrPut(path) { func() }.castPath()
