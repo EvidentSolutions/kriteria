@@ -14,7 +14,7 @@ internal class PathCache private constructor() {
     private val roots = mutableMapOf<KrRoot<*>, Path<*>>()
     private val manyToOneRefs = mutableMapOf<KrManyToOneRef<*>, Path<*>>()
     private val oneToOneRefs = mutableMapOf<KrOneToOneRef<*>, Path<*>>()
-    private val propertyRefs = mutableMapOf<KrPropertyRef<*>, Path<*>>()
+    private val propertyRefs = mutableMapOf<KrBasicPropertyRef<*>, Path<*>>()
     private val joins = mutableMapOf<KrAnyJoin<*, *>, From<*, *>>()
 
     fun addRoot(root: KrRoot<*>, jpaRoot: Root<*>) {
@@ -33,7 +33,7 @@ internal class PathCache private constructor() {
     fun <T> getOrPutOneToOne(path: KrOneToOneRef<T>, func: () -> Path<T>): Path<T> =
         oneToOneRefs.getOrPut(path) { func() }.castPath()
 
-    fun <T> getOrPutProperty(path: KrPropertyRef<T>, func: () -> Path<T>): Path<T> =
+    fun <T> getOrPutProperty(path: KrBasicPropertyRef<T>, func: () -> Path<T>): Path<T> =
         propertyRefs.getOrPut(path) { func() }.castPath()
 
     @Suppress("UNCHECKED_CAST")

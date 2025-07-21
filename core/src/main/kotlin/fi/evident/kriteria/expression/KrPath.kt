@@ -14,7 +14,7 @@ import kotlin.reflect.KProperty1
 public sealed class KrPath<T>() : KrExpression<T>() {
 
     /** Gets a basic (non-entity) property from this path. */
-    public fun <X : Any> getBasic(property: KProperty1<out T, X?>): KrPropertyRef<X> =
+    public fun <X : Any> getBasic(property: KProperty1<in T, X?>): KrBasicPropertyRef<X> =
         getBasicUnsafe(property.name)
 
     /**
@@ -25,15 +25,18 @@ public sealed class KrPath<T>() : KrExpression<T>() {
      * using the generated entity model or [getBasic] when possible.
      */
     @DelicateCriteriaApi
-    public fun <X> getBasicUnsafe(name: String): KrPropertyRef<X> = KrPropertyRef(this, name)
+    public fun <X> getBasicUnsafe(name: String): KrBasicPropertyRef<X> = KrBasicPropertyRef(this, name)
 }
+
+/** Represents a path to an arbitrary property */
+public sealed class KrPropertyRef<T> : KrPath<T>()
 
 /** Represents a path to a basic (non-entity) property. */
 @ConsistentCopyVisibility
-public data class KrPropertyRef<T> internal constructor(
+public data class KrBasicPropertyRef<T> internal constructor(
     internal val childParent: KrPath<*>,
     internal val childProperty: String
-) : KrPath<T>() {
+) : KrPropertyRef<T>() {
     override fun toString(): String = "$childParent.$childProperty"
 }
 
@@ -42,7 +45,7 @@ public data class KrPropertyRef<T> internal constructor(
 public data class KrManyToOneRef<T> internal constructor(
     internal val childParent: KrFrom<*, *>,
     internal val childProperty: String
-) : KrPath<T>() {
+) : KrPropertyRef<T>() {
     override fun toString(): String = "$childParent.$childProperty"
 }
 
@@ -51,7 +54,7 @@ public data class KrManyToOneRef<T> internal constructor(
 public data class KrOneToOneRef<T> internal constructor(
     internal val childParent: KrFrom<*, *>,
     internal val childProperty: String
-) : KrPath<T>() {
+) : KrPropertyRef<T>() {
     override fun toString(): String = "$childParent.$childProperty"
 }
 
@@ -97,11 +100,11 @@ public sealed class KrFrom<X, Y> : KrPath<Y>() {
     public fun <K, V> getMapReferenceUnsafe(name: String): KrMapRef<K, V> = KrMapRef(this, name)
 
     /** Gets a many-to-one relationship property from this path. */
-    public fun <T : Any> getManyToOne(property: KProperty1<out Y, T?>): KrManyToOneRef<T> =
+    public fun <T : Any> getManyToOne(property: KProperty1<in Y, T?>): KrManyToOneRef<T> =
         getManyToOneUnsafe(property.name)
 
     /** Gets a one-to-one relationship property from this path. */
-    public fun <T : Any> getOneToOne(property: KProperty1<out Y, T?>): KrOneToOneRef<T> =
+    public fun <T : Any> getOneToOne(property: KProperty1<in Y, T?>): KrOneToOneRef<T> =
         getOneToOneUnsafe(property.name)
 
     /**

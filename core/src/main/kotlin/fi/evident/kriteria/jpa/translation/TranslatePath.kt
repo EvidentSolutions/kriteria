@@ -18,7 +18,7 @@ internal fun <T> KrPath<T>.translatePath(): Path<T> = when (this) {
     is KrAnyJoin<*, *> -> ctx.pathCache.resolveJoin(this).castPath()
     is KrMapJoin.MapKey -> ctx.pathCache.resolveMapJoin(join).key()
     is KrMapJoin.MapValue -> ctx.pathCache.resolveMapJoin(join).value()
-    is KrPropertyRef -> ctx.pathCache.getOrPutProperty(this) {
+    is KrBasicPropertyRef -> ctx.pathCache.getOrPutProperty(this) {
         childParent.translatePath().get(childProperty)
     }
     is KrManyToOneRef -> ctx.pathCache.getOrPutManyToOne(this) {
