@@ -1,19 +1,8 @@
 package fi.evident.kriteria.query
 
 import fi.evident.kriteria.expression.KrExpression
-import fi.evident.kriteria.expression.KrPredicate
+import fi.evident.kriteria.expression.KrSubquery
 import kotlin.reflect.KClass
-
-/**
- * Represents a subquery.
- */
-public class KrSubquery<T : Any> internal constructor(
-    internal val resultClass: KClass<T>,
-    internal val roots: RootSet,
-    internal val selection: KrExpression<T>,
-    internal val distinct: Boolean,
-    internal val restriction: KrPredicate?,
-)
 
 /**
  * Context for building subqueries.

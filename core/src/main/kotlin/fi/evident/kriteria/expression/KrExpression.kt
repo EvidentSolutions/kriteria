@@ -1,6 +1,5 @@
 package fi.evident.kriteria.expression
 
-import fi.evident.kriteria.query.KrSubquery
 import kotlin.reflect.KClass
 
 /**

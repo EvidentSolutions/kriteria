@@ -1,7 +1,5 @@
 package fi.evident.kriteria.expression
 
-import fi.evident.kriteria.query.KrSubquery
-
 /** Checks if the expression evaluates to any of the given values */
 context(_: KrExpressionContext)
 public fun <T> KrExpression<T>.isAnyOf(vararg values: T): KrPredicate =

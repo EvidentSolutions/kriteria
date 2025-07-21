@@ -22,6 +22,7 @@ internal fun <T> KrExpression<T>.translate(): Expression<T> {
         is CoerceExpression<*> -> translateCoercion()
         is NullExpression -> translateNullExpression()
         is SelectCase -> translateSelectCase()
+        is KrSubquery<*> -> translateSubquery(this)
         is LiteralExpression -> cb.literal(value)
         is NullLiteralExpression<*> -> cb.nullLiteral(type.java)
         is CallExpression -> cb.function(name, returnType.java, *args.map { it.translate() }.toTypedArray())

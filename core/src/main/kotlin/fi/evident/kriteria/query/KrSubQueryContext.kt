@@ -3,6 +3,7 @@ package fi.evident.kriteria.query
 import fi.evident.kriteria.annotations.ExpressionDsl
 import fi.evident.kriteria.expression.KrPredicate
 import fi.evident.kriteria.expression.KrRoot
+import fi.evident.kriteria.expression.KrSubquery
 import fi.evident.kriteria.expression.LiteralExpression
 import fi.evident.kriteria.jpa.EntityMeta
 import kotlin.reflect.KClass

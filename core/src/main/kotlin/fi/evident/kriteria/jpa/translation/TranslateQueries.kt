@@ -1,8 +1,8 @@
 package fi.evident.kriteria.jpa.translation
 
 import fi.evident.kriteria.expression.KrSelection
+import fi.evident.kriteria.expression.KrSubquery
 import fi.evident.kriteria.query.KrQuery
-import fi.evident.kriteria.query.KrSubquery
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Subquery
