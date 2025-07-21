@@ -76,21 +76,21 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
      * Creates an inner join on the specified many-to-one relationship.
      */
     context(_: KrExpressionContext)
-    public fun <Y> innerJoin(path: KrManyToOneRef<Y>): KrJoin<*, Y> =
+    public fun <Y> innerJoin(path: KrEntityRef<Y>): KrJoin<*, Y> =
         join(path, INNER, fetch = false)
 
     /**
      * Creates a left join on the specified many-to-one relationship.
      */
     context(_: KrExpressionContext)
-    public fun <Y> leftJoin(path: KrManyToOneRef<Y>): KrJoin<*, Y> =
+    public fun <Y> leftJoin(path: KrEntityRef<Y>): KrJoin<*, Y> =
         join(path, LEFT, fetch = false)
 
     /**
      * Creates a right join on the specified many-to-one relationship.
      */
     context(_: KrExpressionContext)
-    public fun <Y> rightJoin(path: KrManyToOneRef<Y>): KrJoin<*, Y> =
+    public fun <Y> rightJoin(path: KrEntityRef<Y>): KrJoin<*, Y> =
         join(path, RIGHT, fetch = false)
 
     /**
@@ -98,7 +98,7 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
      */
     context(_: KrExpressionContext)
     internal fun <Y> join(
-        path: KrManyToOneRef<Y>,
+        path: KrEntityRef<Y>,
         joinType: KrJoinType,
         fetch: Boolean
     ): KrJoin<*, Y> =

@@ -22,14 +22,14 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
      * Create a fetch join to the specified attribute using an inner join.
      */
     context(_: KrExpressionContext)
-    public fun <Y> fetch(path: KrManyToOneRef<Y>): KrJoin<*, Y> =
+    public fun <Y> fetch(path: KrEntityRef<Y>): KrJoin<*, Y> =
         join(path, KrJoinType.INNER, true)
 
     /**
      * Create a fetch join to the specified attribute using a left join.
      */
     context(_: KrExpressionContext)
-    public fun <Y> fetchOptional(path: KrManyToOneRef<Y>): KrJoin<*, Y> =
+    public fun <Y> fetchOptional(path: KrEntityRef<Y>): KrJoin<*, Y> =
         join(path, KrJoinType.LEFT, fetch = true)
 
     /**

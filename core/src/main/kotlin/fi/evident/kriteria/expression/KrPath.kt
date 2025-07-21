@@ -40,21 +40,29 @@ public data class KrBasicPropertyRef<T> internal constructor(
     override fun toString(): String = "$childParent.$childProperty"
 }
 
+/**
+ * A many-to-one or one-to-one reference to an entity.
+ */
+public sealed class KrEntityRef<T> : KrPropertyRef<T>() {
+    internal abstract val childParent: KrFrom<*, *>
+    internal abstract val childProperty: String
+}
+
 /** Represents a path to a many-to-one relationship property. */
 @ConsistentCopyVisibility
 public data class KrManyToOneRef<T> internal constructor(
-    internal val childParent: KrFrom<*, *>,
-    internal val childProperty: String
-) : KrPropertyRef<T>() {
+    override val childParent: KrFrom<*, *>,
+    override val childProperty: String
+) : KrEntityRef<T>() {
     override fun toString(): String = "$childParent.$childProperty"
 }
 
 /** Represents a path to a many-to-one relationship property. */
 @ConsistentCopyVisibility
 public data class KrOneToOneRef<T> internal constructor(
-    internal val childParent: KrFrom<*, *>,
-    internal val childProperty: String
-) : KrPropertyRef<T>() {
+    override val childParent: KrFrom<*, *>,
+    override val childProperty: String
+) : KrEntityRef<T>() {
     override fun toString(): String = "$childParent.$childProperty"
 }
 
