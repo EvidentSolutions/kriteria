@@ -1,8 +1,7 @@
 package fi.evident.kriteria.query
 
 import fi.evident.kriteria.expression.*
-import fi.evident.kriteria.expression.KrJoinType.INNER
-import fi.evident.kriteria.expression.KrJoinType.LEFT
+import fi.evident.kriteria.expression.KrJoinType.*
 import fi.evident.kriteria.jpa.EntityMeta
 
 /**
@@ -88,6 +87,13 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
         join(path, LEFT, fetch = false)
 
     /**
+     * Creates a right join on the specified many-to-one relationship.
+     */
+    context(_: KrExpressionContext)
+    public fun <Y> rightJoin(path: KrManyToOneRef<Y>): KrJoin<*, Y> =
+        join(path, RIGHT, fetch = false)
+
+    /**
      * Creates a specified join on the given many-to-one relationship.
      */
     context(_: KrExpressionContext)
@@ -147,6 +153,13 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
         joinSet(path, LEFT)
 
     /**
+     * Creates a right join on the specified collection relationship.
+     */
+    context(_: KrExpressionContext)
+    public fun <Y> rightJoinSet(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
+        joinSet(path, RIGHT)
+
+    /**
      * Creates a specified join on the given collection relationship.
      */
     context(_: KrExpressionContext)
@@ -166,6 +179,13 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
     context(_: KrExpressionContext)
     public fun <K, V> leftJoinMap(path: KrMapRef<K, V>): KrMapJoin<*, K, V> =
         joinMap(path, LEFT)
+
+    /**
+     * Creates a right join on the specified map relationship.
+     */
+    context(_: KrExpressionContext)
+    public fun <K, V> rightJoinMap(path: KrMapRef<K, V>): KrMapJoin<*, K, V> =
+        joinMap(path, RIGHT)
 
     /**
      * Creates a specified join on the given map relationship.

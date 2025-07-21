@@ -1,8 +1,7 @@
 package fi.evident.kriteria.jpa.translation
 
 import fi.evident.kriteria.expression.*
-import fi.evident.kriteria.expression.KrJoinType.INNER
-import fi.evident.kriteria.expression.KrJoinType.LEFT
+import fi.evident.kriteria.expression.KrJoinType.*
 import jakarta.persistence.criteria.Join
 import jakarta.persistence.criteria.JoinType
 import org.hibernate.query.criteria.JpaFrom
@@ -69,4 +68,5 @@ private fun <X, K, V> translateMapJoin(join: KrMapJoin<X, K, V>) {
 private fun KrJoinType.translate(): JoinType = when (this) {
     INNER -> JoinType.INNER
     LEFT -> JoinType.LEFT
+    RIGHT -> JoinType.RIGHT
 }

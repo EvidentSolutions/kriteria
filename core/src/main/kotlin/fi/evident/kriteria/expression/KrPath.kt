@@ -191,5 +191,5 @@ public class KrMapJoin<X, K, V> internal constructor(
 }
 
 internal enum class KrJoinType {
-    INNER, LEFT
+    INNER, LEFT, RIGHT
 }
