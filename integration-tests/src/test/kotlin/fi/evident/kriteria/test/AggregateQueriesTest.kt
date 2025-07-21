@@ -1,17 +1,16 @@
 package fi.evident.kriteria.test
 
 import com.google.common.truth.Truth.assertThat
+import fi.evident.kriteria.annotations.CriteriaConstructor
 import fi.evident.kriteria.expression.*
+import fi.evident.kriteria.jpa.findAll
 import fi.evident.kriteria.jpa.findSingle
 import fi.evident.kriteria.test.db.DatabaseContext
 import fi.evident.kriteria.test.db.DatabaseTest
 import fi.evident.kriteria.test.db.em
 import fi.evident.kriteria.test.db.transactionalTest
 import fi.evident.kriteria.test.entity.Employee
-import fi.evident.kriteria.test.gen.department
-import fi.evident.kriteria.test.gen.id
-import fi.evident.kriteria.test.gen.name
-import fi.evident.kriteria.test.gen.salary
+import fi.evident.kriteria.test.gen.*
 import kotlin.test.Test
 
 @DatabaseTest
@@ -112,4 +111,21 @@ class AggregateQueriesTest(private val db: DatabaseContext, private val data: De
         val expected = data.employees.count { it.name.startsWith("B") }
         assertThat(count).isEqualTo(expected)
     }
+
+    @Test
+    fun `group by`() = transactionalTest(db) {
+        val result = em.findAll<DepartmentEmployeeCounts> {
+            val e = from(Employee)
+            select(constructDepartmentEmployeeCounts(e.department.name, count(e)))
+            groupBy(e.department.name)
+        }
+
+        assertThat(result).containsExactlyElementsIn(
+            data.departments
+                .filter { it.employees.isNotEmpty() }
+                .map { DepartmentEmployeeCounts(it.name, it.employees.size.toLong()) }
+        )
+    }
+
+    data class DepartmentEmployeeCounts @CriteriaConstructor constructor(val name: String, val count: Long)
 }

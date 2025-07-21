@@ -17,5 +17,6 @@ public class KrSubqueryBuilder<T : Any> internal constructor(
         selection = selection ?: error("select(...) was not called for sub-query"),
         distinct = distinct,
         restriction = restriction,
+        groupBy = groupBy,
     )
 }

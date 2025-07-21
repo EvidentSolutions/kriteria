@@ -12,4 +12,5 @@ public class KrSubquery<T : Any> internal constructor(
     internal val selection: KrExpression<T>,
     internal val distinct: Boolean,
     internal val restriction: KrPredicate?,
+    internal val groupBy: List<KrExpression<*>>?,
 ) : KrExpression<T>()

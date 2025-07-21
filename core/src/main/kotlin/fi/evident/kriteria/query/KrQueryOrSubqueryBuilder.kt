@@ -13,6 +13,7 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
     internal var restriction: KrPredicate? = null
     internal var selection: S? = null
     internal var distinct = false
+    internal var groupBy: List<KrExpression<*>>? = null
 
     /**
      * Defines the selection for this query. The results will be distinct.
@@ -34,6 +35,18 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
         check(this.selection == null) { "select already called" }
         this.distinct = distinct
         this.selection = selection
+    }
+
+    /**
+     * Adds a grouping to this query.
+     *
+     * It is an error to call this multiple times.
+     */
+    public fun groupBy(vararg groupBy: KrExpression<*>) {
+        require(groupBy.isNotEmpty()) { "empty groupBy not allowed" }
+        check(this.groupBy == null) { "groupBy already called" }
+
+        this.groupBy = groupBy.toList()
     }
 
     /** Creates a new unique root for this query. */

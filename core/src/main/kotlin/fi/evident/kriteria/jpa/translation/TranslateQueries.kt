@@ -31,6 +31,10 @@ internal fun <T : Any> translateQuery(
         if (restriction != null && !restriction.isAlwaysTrue())
             result.where(restriction.translatePredicate())
 
+        val groupBy = query.groupBy
+        if (groupBy != null)
+            result.groupBy(groupBy.map { it.translate() })
+
         val order = query.order
         if (order != null)
             result.orderBy(order.translateOrder())
@@ -63,6 +67,10 @@ private fun <T : Any> translateSubquery(
 
         result.select(query.selection.translate())
         result.distinct(query.distinct)
+
+        val groupBy = query.groupBy
+        if (groupBy != null)
+            result.groupBy(groupBy.map { it.translate() })
 
         val restriction = query.restriction
         if (restriction != null && !restriction.isAlwaysTrue())

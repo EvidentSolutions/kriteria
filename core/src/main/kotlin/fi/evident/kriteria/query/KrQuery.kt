@@ -7,6 +7,7 @@ internal class KrQuery<T> internal constructor(
     internal val selection: T,
     internal val distinct: Boolean,
     internal val restriction: KrPredicate?,
+    internal val groupBy: List<KrExpression<*>>?,
     internal val order: KrOrder?,
 )
 
@@ -46,6 +47,7 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
         selection = this.selection ?: error("select must be called"),
         distinct = distinct,
         restriction = restriction,
+        groupBy = groupBy,
         order = order,
     )
 }
