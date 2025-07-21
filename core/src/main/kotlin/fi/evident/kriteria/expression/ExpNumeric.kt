@@ -82,12 +82,12 @@ public operator fun Int.rem(y: KrExpression<Int>): KrExpression<Int> =
 
 /** Computes the square root of the value */
 context(_: KrExpressionContext)
-public fun sqrt(x: KrExpression<Number>): KrExpression<Double> =
+public fun sqrt(x: KrExpression<out Number>): KrExpression<Double> =
     NumericExpression.Sqrt(x)
 
 /** Computes the sign of the value */
 context(_: KrExpressionContext)
-public fun sign(x: KrExpression<Number>): KrExpression<Int> =
+public fun sign(x: KrExpression<out Number>): KrExpression<Int> =
     NumericExpression.Sign(x)
 
 /** Computes the ceiling of the value */
@@ -102,27 +102,27 @@ public fun <T : Number> floor(x: KrExpression<T>): KrExpression<T> =
 
 /** Returns the exponential of the given value */
 context(_: KrExpressionContext)
-public fun exp(x: KrExpression<Number>): KrExpression<Double> =
+public fun exp(x: KrExpression<out Number>): KrExpression<Double> =
     NumericExpression.Exp(x)
 
 /** Returns the natural logarithm of the given value */
 context(_: KrExpressionContext)
-public fun ln(x: KrExpression<Number>): KrExpression<Double> =
+public fun ln(x: KrExpression<out Number>): KrExpression<Double> =
     NumericExpression.Ln(x)
 
 /** Calculates base to power of exponent */
 context(_: KrExpressionContext)
-public fun KrExpression<Number>.pow(exponent: KrExpression<Number>): KrExpression<Double> =
+public fun KrExpression<out Number>.pow(exponent: KrExpression<out Number>): KrExpression<Double> =
     NumericExpression.Power(this, exponent)
 
 /** Calculates base to power of exponent */
 context(_: KrExpressionContext)
-public fun KrExpression<Number>.pow(exponent: Number): KrExpression<Double> =
+public fun KrExpression<out Number>.pow(exponent: Number): KrExpression<Double> =
     pow(literal(exponent))
 
 /** Calculates base to power of exponent */
 context(_: KrExpressionContext)
-public fun Number.pow(exponent: KrExpression<Number>): KrExpression<Double> =
+public fun Number.pow(exponent: KrExpression<out Number>): KrExpression<Double> =
     literal(this).pow(exponent)
 
 

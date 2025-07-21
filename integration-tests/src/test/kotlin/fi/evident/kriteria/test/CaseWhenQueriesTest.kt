@@ -39,8 +39,8 @@ class CaseWhenQueriesTest(private val db: DatabaseContext, private val data: Def
 
     @Test
     fun `if then else`() = transactionalTest(db) {
-        assertThat(evaluateExpression { ifThenElse(alwaysTrue(), literal(1), literal(2)) }).isEqualTo(1)
-        assertThat(evaluateExpression { ifThenElse(alwaysFalse(), literal(1), literal(2)) }).isEqualTo(2)
+        assertThat(evaluateExpression { ifThenElse<Number>(alwaysTrue(), literal(1), literal(2)) }).isEqualTo(1)
+        assertThat(evaluateExpression { ifThenElse<Number>(alwaysFalse(), literal(1), literal(2)) }).isEqualTo(2)
 
         assertThat(evaluateExpression { ifThenElse(alwaysFalse(), 1, 2) }).isEqualTo(2)
         assertThat(evaluateExpression { ifThenElse(alwaysFalse(), literal(1), 2) }).isEqualTo(2)

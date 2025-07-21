@@ -7,7 +7,7 @@ internal class KrUpdate<T: Any>(
     val bindings: List<Binding<*>>,
     val restriction: KrPredicate,
 ) {
-    class Binding<T>(val property: KrPropertyRef<T>, val expr: KrExpression<T?>)
+    class Binding<T>(val property: KrPropertyRef<T>, val expr: KrExpression<out T>)
 }
 
 /**
@@ -18,11 +18,11 @@ public class KrUpdateBuilder<T : Any>(private val root: KrRoot<T>) {
     private val bindings = mutableListOf<KrUpdate.Binding<*>>()
     private var restriction: KrPredicate? = null
 
-    public fun <X> set(property: KrPropertyRef<X>, value: X?) {
+    public fun <X> set(property: KrPropertyRef<X>, value: X) {
         bindings += KrUpdate.Binding(property, LiteralExpression(value))
     }
 
-    public fun <X> set(property: KrPropertyRef<X>, expr: KrExpression<X?>) {
+    public fun <X> set(property: KrPropertyRef<X>, expr: KrExpression<X>) {
         bindings += KrUpdate.Binding(property, expr)
     }
 

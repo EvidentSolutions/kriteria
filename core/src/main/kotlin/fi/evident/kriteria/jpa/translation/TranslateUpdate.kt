@@ -24,10 +24,10 @@ internal fun <T : Any> translateUpdate(update: KrUpdate<T>, cb: CriteriaBuilder)
 }
 
 context(_: TranslationContext)
-private fun <T> KrUpdate.Binding<T>.translate(): Pair<Path<T>, Expression<T?>> =
+private fun <T> KrUpdate.Binding<T>.translate(): Pair<Path<T>, Expression<out T>> =
     property.translatePath() to expr.translate()
 
 context(_: TranslationContext)
-private fun <T> CriteriaUpdate<*>.set(binding: Pair<Path<T>, Expression<T?>>) {
+private fun <T> CriteriaUpdate<*>.set(binding: Pair<Path<T>, Expression<out T>>) {
     set(binding.first, binding.second)
 }

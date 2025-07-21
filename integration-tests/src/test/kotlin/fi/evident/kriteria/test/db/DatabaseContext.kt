@@ -29,7 +29,7 @@ inline fun <T> transactionally(block: context(Tx) () -> T): T {
 }
 
 context(tx: Tx)
-inline fun <reified T : Any> evaluateExpression(crossinline build: context(KrExpressionContext) () -> KrExpression<T?>): T? =
+inline fun <reified T : Any> evaluateExpression(crossinline build: context(KrExpressionContext) () -> KrExpression<out T?>): T? =
     em.findFirstOrNull<T> {
         select(build())
     }

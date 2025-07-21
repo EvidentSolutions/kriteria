@@ -19,11 +19,11 @@ public sealed class KrSelection<out T>
  *
  * @param T The type of the expression
  */
-public sealed class KrExpression<out T> : KrSelection<T>()
+public sealed class KrExpression<T> : KrSelection<T>()
 
-internal data class LiteralExpression<T>(val value: T) : KrExpression<T>()
+internal data class LiteralExpression<T>(val value: T?) : KrExpression<T>()
 
-internal data class NullLiteralExpression<T : Any>(val type: KClass<T>) : KrExpression<T?>()
+internal data class NullLiteralExpression<T : Any>(val type: KClass<T>) : KrExpression<T>()
 
 internal data class CoerceExpression<T : Any>(val exp: KrExpression<*>, val target: KClass<T>) : KrExpression<T>()
 
@@ -48,11 +48,11 @@ internal sealed class NumericExpression<T : Number> : KrExpression<T>() {
     internal data class Ceiling<T : Number>(val value: KrExpression<T>) : NumericExpression<T>()
     internal data class Floor<T : Number>(val value: KrExpression<T>) : NumericExpression<T>()
     internal data class Modulo(val lhs: KrExpression<Int>, val rhs: KrExpression<Int>) : NumericExpression<Int>()
-    internal data class Sqrt(val value: KrExpression<Number>) : NumericExpression<Double>()
-    internal data class Exp(val value: KrExpression<Number>) : NumericExpression<Double>()
-    internal data class Ln(val value: KrExpression<Number>) : NumericExpression<Double>()
-    internal data class Power(val base: KrExpression<Number>, val exponent: KrExpression<Number>) : NumericExpression<Double>()
-    internal data class Sign(val value: KrExpression<Number>) : NumericExpression<Int>()
+    internal data class Sqrt(val value: KrExpression<out Number>) : NumericExpression<Double>()
+    internal data class Exp(val value: KrExpression<out Number>) : NumericExpression<Double>()
+    internal data class Ln(val value: KrExpression<out Number>) : NumericExpression<Double>()
+    internal data class Power(val base: KrExpression<out Number>, val exponent: KrExpression<out Number>) : NumericExpression<Double>()
+    internal data class Sign(val value: KrExpression<out Number>) : NumericExpression<Int>()
     internal data class Length(val exp: KrExpression<String>) : NumericExpression<Int>()
     internal data class Count(val exp: KrExpression<*>) : NumericExpression<Long>()
     internal data class CountDistinct(val exp: KrExpression<*>) : NumericExpression<Long>()
