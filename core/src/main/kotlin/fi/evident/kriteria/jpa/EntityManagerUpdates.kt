@@ -39,7 +39,7 @@ public fun <T : Any> EntityManager.update(
  */
 public fun <T : Any> EntityManager.delete(
     entityMeta: EntityMeta<T, *>,
-    predicate: context(KrExpressionContext) (KrRoot<T>) -> KrPredicate,
+    predicate: context(KrExpressionContext, KrSubQueryContext) (KrRoot<T>) -> KrPredicate,
 ): Int {
     val root = RootSetBuilder().newRoot(entityMeta)
     val restriction = withDefaultContexts { predicate(root) }
