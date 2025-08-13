@@ -1,5 +1,6 @@
 package fi.evident.kriteria.test.db
 
+import fi.evident.kriteria.jpa.EntityMeta
 import fi.evident.kriteria.test.gen.generatedEntityMetas
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
@@ -23,14 +24,28 @@ inline fun testWithDatabaseContext(db: DatabaseContext, block: context(DatabaseC
 
 context(tx: Tx)
 fun truncateTables() {
-    // We make the assumption that naming strategy maps class names directly to table names.
-    // If the assumption is incorrect, we'll find out immediately as the tests fail.
-    val sql = generatedEntityMetas.joinToString(prefix = "truncate table ", separator = ", ", postfix = " cascade") {
-        it.entityClass.simpleName.toString()
+    truncateTables(generatedEntityMetas)
+}
+
+context(tx: Tx)
+fun truncateTable(meta: EntityMeta<*, *>) {
+    truncateTables(listOf(meta))
+}
+
+context(tx: Tx)
+fun truncateTables(metas: List<EntityMeta<*, *>>) {
+    val sql = metas.joinToString(prefix = "truncate table ", separator = ", ", postfix = " cascade") {
+        it.tableName
     }
+
     @Suppress("SqlSourceToSinkFlow")
     tx.em.createNativeQuery(sql).executeUpdate()
 }
+
+// We make the assumption that naming strategy maps class names directly to table names.
+// If the assumption is incorrect, we'll find out immediately as the tests fail.
+private val EntityMeta<*, *>.tableName: String
+    get() = entityClass.simpleName.toString()
 
 fun buildSessionFactory(): SessionFactory {
     val configuration = Configuration()
