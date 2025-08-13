@@ -13,4 +13,16 @@ public inline fun <reified T : Any> callFunction(name: String, vararg args: KrEx
 @DelicateCriteriaApi
 context(_: KrExpressionContext)
 public fun <T : Any> callFunction(name: String, type: KClass<T>, vararg args: KrExpression<*>): KrExpression<T> =
-    CallExpression(name, type, args.asList())
+    NormalCallExpression(name, type, args.asList())
+
+/** Calls a named function that has return type `T` with given arguments */
+@DelicateCriteriaApi
+context(_: KrExpressionContext)
+public inline fun <reified T : Any> KrWindow.callAggregateFunction(name: String, vararg args: KrExpression<*>): KrExpression<T> =
+    callAggregateFunction(name, T::class, *args)
+
+/** Calls a named function that has given return type with given arguments */
+@DelicateCriteriaApi
+context(_: KrExpressionContext)
+public fun <T : Any> KrWindow.callAggregateFunction(name: String, type: KClass<T>, vararg args: KrExpression<*>): KrExpression<T> =
+    CallAggregateExpression(name, type, args.asList(), this)

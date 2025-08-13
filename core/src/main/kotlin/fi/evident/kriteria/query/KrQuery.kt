@@ -9,6 +9,7 @@ internal class KrQuery<T> internal constructor(
     internal val restriction: KrPredicate?,
     internal val groupBy: List<KrExpression<*>>?,
     internal val order: KrOrder?,
+    internal val windows: List<KrWindow>,
 )
 
 /**
@@ -63,5 +64,6 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
         restriction = restriction,
         groupBy = groupBy,
         order = order,
+        windows = windows,
     )
 }

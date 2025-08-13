@@ -32,7 +32,24 @@ internal sealed class NullExpression<T> : KrExpression<T>() {
     internal data class NullIf<T>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : NullExpression<T>()
 }
 
-internal data class CallExpression<T : Any>(val name: String, val returnType: KClass<T>, val args: List<KrExpression<*>>) : KrExpression<T>()
+internal sealed class CallExpression<T : Any>(
+    val name: String,
+    val returnType: KClass<T>,
+    val args: List<KrExpression<*>>
+) : KrExpression<T>()
+
+internal class NormalCallExpression<T : Any>(
+    name: String,
+    returnType: KClass<T>,
+    args: List<KrExpression<*>>
+) : CallExpression<T>(name, returnType, args)
+
+internal class CallAggregateExpression<T : Any>(
+    name: String,
+    returnType: KClass<T>,
+    args: List<KrExpression<*>>,
+    val window: KrWindow,
+) : CallExpression<T>(name, returnType, args)
 
 internal sealed class ComparableExpression<T : Comparable<T>> : KrExpression<T>() {
     internal data class Max<T : Comparable<T>>(val exp: KrExpression<T>) : ComparableExpression<T>()
@@ -43,7 +60,9 @@ internal sealed class NumericExpression<T : Number> : KrExpression<T>() {
     internal data class UnaryMinus<T : Number>(val exp: KrExpression<T>) : NumericExpression<T>()
     internal data class Plus<T : Number>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : NumericExpression<T>()
     internal data class Minus<T : Number>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : NumericExpression<T>()
-    internal data class Multiply<T : Number>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : NumericExpression<T>()
+    internal data class Multiply<T : Number>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) :
+        NumericExpression<T>()
+
     internal data class Divide<T : Number>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : NumericExpression<T>()
     internal data class Ceiling<T : Number>(val value: KrExpression<T>) : NumericExpression<T>()
     internal data class Floor<T : Number>(val value: KrExpression<T>) : NumericExpression<T>()
@@ -51,7 +70,9 @@ internal sealed class NumericExpression<T : Number> : KrExpression<T>() {
     internal data class Sqrt(val value: KrExpression<out Number>) : NumericExpression<Double>()
     internal data class Exp(val value: KrExpression<out Number>) : NumericExpression<Double>()
     internal data class Ln(val value: KrExpression<out Number>) : NumericExpression<Double>()
-    internal data class Power(val base: KrExpression<out Number>, val exponent: KrExpression<out Number>) : NumericExpression<Double>()
+    internal data class Power(val base: KrExpression<out Number>, val exponent: KrExpression<out Number>) :
+        NumericExpression<Double>()
+
     internal data class Sign(val value: KrExpression<out Number>) : NumericExpression<Int>()
     internal data class Length(val exp: KrExpression<String>) : NumericExpression<Int>()
     internal data class Count(val exp: KrExpression<*>) : NumericExpression<Long>()
@@ -64,7 +85,12 @@ internal sealed class NumericExpression<T : Number> : KrExpression<T>() {
 }
 
 internal sealed class StringExpression : KrExpression<String>() {
-    internal data class Substring(val value: KrExpression<String>, val startIndex: KrExpression<Int>, val endIndex: KrExpression<Int>?) : StringExpression()
+    internal data class Substring(
+        val value: KrExpression<String>,
+        val startIndex: KrExpression<Int>,
+        val endIndex: KrExpression<Int>?
+    ) : StringExpression()
+
     internal data class Uppercase(val value: KrExpression<String>) : StringExpression()
     internal data class Lowercase(val value: KrExpression<String>) : StringExpression()
     internal data class Concat(val lhs: KrExpression<String>, val rhs: KrExpression<String>) : StringExpression()
@@ -97,16 +123,29 @@ public sealed class KrPredicate() : KrExpression<Boolean>() {
 
     internal data class IsEqual<T>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : KrPredicate()
     internal data class IsNotEqual<T>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : KrPredicate()
-    internal data class IsLessThan<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : KrPredicate()
-    internal data class IsLessThanOrEqualTo<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : KrPredicate()
-    internal data class IsGreaterThan<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : KrPredicate()
-    internal data class IsGreaterThanOrEqualTo<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : KrPredicate()
+    internal data class IsLessThan<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) :
+        KrPredicate()
+
+    internal data class IsLessThanOrEqualTo<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) :
+        KrPredicate()
+
+    internal data class IsGreaterThan<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) :
+        KrPredicate()
+
+    internal data class IsGreaterThanOrEqualTo<T : Comparable<T>>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) :
+        KrPredicate()
+
     internal data class And(val predicates: Collection<KrPredicate>) : KrPredicate()
     internal data class Or(val predicates: Collection<KrPredicate>) : KrPredicate()
     internal data class Not(val predicate: KrExpression<Boolean>) : KrPredicate()
     internal data class Like(val x: KrExpression<String>, val pattern: KrExpression<String>) : KrPredicate()
     internal data class NotLike(val x: KrExpression<String>, val pattern: KrExpression<String>) : KrPredicate()
-    internal data class Between<T : Comparable<T>>(val value: KrExpression<T>, val lower: KrExpression<T>, val upper: KrExpression<T>) : KrPredicate()
+    internal data class Between<T : Comparable<T>>(
+        val value: KrExpression<T>,
+        val lower: KrExpression<T>,
+        val upper: KrExpression<T>
+    ) : KrPredicate()
+
     internal data class IsEmpty(val collection: KrCollectionRef<*>) : KrPredicate()
     internal data class IsNotEmpty(val collection: KrCollectionRef<*>) : KrPredicate()
     internal data class IsNull(val exp: KrExpression<*>) : KrPredicate()
@@ -114,7 +153,9 @@ public sealed class KrPredicate() : KrExpression<Boolean>() {
     internal data class IsTrue(val exp: KrExpression<Boolean>) : KrPredicate()
     internal data class IsFalse(val exp: KrExpression<Boolean>) : KrPredicate()
     internal data class IsAnyOf<T>(val value: KrExpression<T>, val collection: Collection<T>) : KrPredicate()
-    internal data class ContainsSubquery<T : Any>(val value: KrExpression<T>, val subQuery: KrSubquery<T>) : KrPredicate()
+    internal data class ContainsSubquery<T : Any>(val value: KrExpression<T>, val subQuery: KrSubquery<T>) :
+        KrPredicate()
+
     internal data class Exists(val subQuery: KrSubquery<*>) : KrPredicate()
     internal data class IsMember<T>(val element: KrExpression<T>, val collection: KrCollectionRef<T>) : KrPredicate()
     internal data class IsNotMember<T>(val element: KrExpression<T>, val collection: KrCollectionRef<T>) : KrPredicate()
