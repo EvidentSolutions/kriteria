@@ -25,11 +25,24 @@ internal fun <T> KrExpression<T>.translate(): Expression<T> {
         is KrSubquery<*> -> translateSubquery(this)
         is LiteralExpression -> cb.literal(value)
         is NullLiteralExpression<*> -> cb.nullLiteral(type.java)
-        is CallExpression -> cb.function(name, returnType.java, *args.map { it.translate() }.toTypedArray())
+        is CallExpression<*> -> translateCall()
     }
 
     @Suppress("UNCHECKED_CAST")
     return result as Expression<T>
+}
+
+context(_: TranslationContext)
+private fun <T : Any > CallExpression<T>.translateCall(): Expression<T> {
+    val returnClass = returnType.java
+    val arguments = args.map { it.translate() }.toTypedArray()
+
+    return when (this) {
+        is NormalCallExpression ->
+            cb.function(name, returnClass, *arguments)
+        is CallAggregateExpression ->
+            hibernateCb("window functions").functionAggregate(name, returnClass, window.translated ?: error("window has not been translated"), *arguments)
+    }
 }
 
 context(_: TranslationContext)

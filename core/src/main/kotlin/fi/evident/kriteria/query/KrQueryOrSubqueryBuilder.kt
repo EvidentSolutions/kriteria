@@ -1,5 +1,6 @@
 package fi.evident.kriteria.query
 
+import fi.evident.kriteria.annotations.ExpressionDsl
 import fi.evident.kriteria.expression.*
 import fi.evident.kriteria.expression.KrJoinType.*
 import fi.evident.kriteria.jpa.EntityMeta
@@ -7,12 +8,14 @@ import fi.evident.kriteria.jpa.EntityMeta
 /**
  * Base class for builders of queries and subqueries.
  */
+@ExpressionDsl
 public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
     internal val roots = RootSetBuilder()
     internal var restriction: KrPredicate? = null
     internal var selection: S? = null
     internal var distinct = false
     internal var groupBy: List<KrExpression<*>>? = null
+    internal var windows = mutableListOf<KrWindow>()
 
     /**
      * Defines the selection for this query. The results will be distinct.
@@ -186,6 +189,16 @@ public abstract class KrQueryOrSubqueryBuilder<S> internal constructor() {
     context(_: KrExpressionContext)
     public fun <K, V> rightJoinMap(path: KrMapRef<K, V>): KrMapJoin<*, K, V> =
         joinMap(path, RIGHT)
+
+    /**
+     * Creates a new query window, taking a block for configuring the window.
+     */
+    context(_: KrExpressionContext)
+    public fun window(init: KrWindowBuilder.() -> Unit): KrWindow {
+        val window = KrWindowBuilder().apply(init).build()
+        windows.add(window)
+        return window
+    }
 
     /**
      * Creates a specified join on the given map relationship.

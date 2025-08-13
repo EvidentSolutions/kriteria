@@ -2,6 +2,7 @@ package fi.evident.kriteria.jpa.translation
 
 import jakarta.persistence.criteria.CommonAbstractCriteria
 import jakarta.persistence.criteria.CriteriaBuilder
+import org.hibernate.query.criteria.HibernateCriteriaBuilder
 
 /** A context for translating criteria expressions to Hibernate. */
 internal class TranslationContext(
@@ -17,3 +18,8 @@ internal class TranslationContext(
 context(ctx: TranslationContext)
 internal val cb: CriteriaBuilder
     get() = ctx.cb
+
+context(ctx: TranslationContext)
+internal fun hibernateCb(operation: String): HibernateCriteriaBuilder =
+    ctx.cb as? HibernateCriteriaBuilder
+        ?: throw UnsupportedOperationException("Hibernate is required for $operation")

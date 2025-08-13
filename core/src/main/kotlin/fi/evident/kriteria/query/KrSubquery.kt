@@ -18,5 +18,6 @@ public class KrSubqueryBuilder<T : Any> internal constructor(
         distinct = distinct,
         restriction = restriction,
         groupBy = groupBy,
+        windows = windows,
     )
 }

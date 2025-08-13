@@ -24,6 +24,9 @@ internal fun <T : Any> translateQuery(
         for (join in query.roots.joins)
             translateJoin(join)
 
+        for (window in query.windows)
+            translateWindow(window)
+
         result.select(query.selection.translateSelection())
         result.distinct(query.distinct)
 
@@ -64,6 +67,9 @@ private fun <T : Any> translateSubquery(
     context(subContext) {
         for (join in query.roots.joins)
             translateJoin(join)
+
+        for (window in query.windows)
+            translateWindow(window)
 
         result.select(query.selection.translate())
         result.distinct(query.distinct)
