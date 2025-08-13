@@ -1,5 +1,6 @@
 package fi.evident.kriteria.expression
 
+import jakarta.persistence.criteria.Expression
 import kotlin.reflect.KClass
 
 /**
@@ -31,6 +32,8 @@ internal sealed class NullExpression<T> : KrExpression<T>() {
     internal data class Coalesce<T>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : NullExpression<T>()
     internal data class NullIf<T>(val lhs: KrExpression<T>, val rhs: KrExpression<T>) : NullExpression<T>()
 }
+
+internal class HibernateExpression<T>(val builder: HibernateExpressionContext.() -> Expression<T>) : KrExpression<T>()
 
 internal sealed class CallExpression<T : Any>(
     val name: String,

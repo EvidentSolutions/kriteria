@@ -26,10 +26,17 @@ internal fun <T> KrExpression<T>.translate(): Expression<T> {
         is LiteralExpression -> cb.literal(value)
         is NullLiteralExpression<*> -> cb.nullLiteral(type.java)
         is CallExpression<*> -> translateCall()
+        is HibernateExpression<*> -> translateHibernateExpression()
     }
 
     @Suppress("UNCHECKED_CAST")
     return result as Expression<T>
+}
+
+context(ctx: TranslationContext)
+private fun <T> HibernateExpression<T>.translateHibernateExpression(): Expression<T> {
+    val expressionContext = HibernateExpressionContext(hibernateCb("hibernate { ... } -expression"), ctx)
+    return expressionContext.builder()
 }
 
 context(_: TranslationContext)
