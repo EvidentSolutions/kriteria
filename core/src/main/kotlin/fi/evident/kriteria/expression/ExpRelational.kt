@@ -7,7 +7,7 @@ public infix fun <T> KrExpression<T>.isEqualTo(y: KrExpression<T>): KrPredicate 
 
 /** Checks whether an expression is equal to the given value */
 context(_: KrExpressionContext)
-public infix fun <T> KrExpression<T>.isEqualTo(y: T): KrPredicate =
+public infix fun <T> KrExpression<T>.isEqualTo(y: T?): KrPredicate =
     this isEqualTo literal(y)
 
 /** Checks whether two expressions are not equal */
@@ -17,7 +17,7 @@ public infix fun <T> KrExpression<T>.isNotEqualTo(y: KrExpression<T>): KrPredica
 
 /** Checks whether an expression is not equal to the given value */
 context(_: KrExpressionContext)
-public infix fun <T> KrExpression<T>.isNotEqualTo(y: T): KrPredicate =
+public infix fun <T> KrExpression<T>.isNotEqualTo(y: T?): KrPredicate =
     this isNotEqualTo literal(y)
 
 /** Checks if the first value is less than the second */
