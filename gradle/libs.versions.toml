@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.2.0"
 ksp = "2.2.0-2.0.2"
-hibernate = "6.6.18.Final"
+hibernate = "7.1.8.Final"
 kotlinpoet = "2.2.0"
 testcontainers = "1.21.1"
 postgresqlJdbc = "42.7.5"

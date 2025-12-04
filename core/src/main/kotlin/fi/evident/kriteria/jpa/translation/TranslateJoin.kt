@@ -5,7 +5,6 @@ import fi.evident.kriteria.expression.KrJoinType.*
 import jakarta.persistence.criteria.Join
 import jakarta.persistence.criteria.JoinType
 import org.hibernate.query.criteria.JpaFrom
-import org.hibernate.query.sqm.tree.SqmJoinType
 
 context(ctx: TranslationContext)
 internal fun translateJoin(join: KrAnyJoin<*, *>) {
@@ -41,9 +40,7 @@ private fun <X, Y : Any> translatePredicateJoin(join: KrPredicateJoin<X, Y>) {
     if (from !is JpaFrom<*, *>)
         throw UnsupportedOperationException("Predicate join is only supported for Hibernate")
 
-    val type = SqmJoinType.from(join.joinType.translate())
-
-    val j = from.join(join.joinEntity.entityClass.java, type)
+    val j = from.join(join.joinEntity.entityClass.java, join.joinType.translate())
 
     // We need to add the generated join to the cache already at this point,
     // since the predicate refers to it
