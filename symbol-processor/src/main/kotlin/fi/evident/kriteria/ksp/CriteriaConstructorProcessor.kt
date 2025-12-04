@@ -63,7 +63,7 @@ private class CriteriaConstructorProcessor(
         // Create a function that takes Selection<*> parameters and returns CompoundSelection<T>
         val function = FunSpec.builder(functionName)
             .returns(returnType)
-            .addModifiers(KModifier.INTERNAL)
+            .addModifiers(KModifier.INTERNAL) // TODO: use the visibility of the original class
 
         val containingFile = classDeclaration.containingFile
         if (containingFile != null)
