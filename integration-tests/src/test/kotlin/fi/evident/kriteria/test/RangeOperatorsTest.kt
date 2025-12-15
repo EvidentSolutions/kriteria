@@ -59,4 +59,32 @@ class RangeOperatorsTest(private val db: DatabaseContext) {
         assertThat(evaluateExpression<Boolean> { 40 isInRange literal(35)..<literal(45) }).isTrue()
         assertThat(evaluateExpression<Boolean> { 40 isInRange literal(35)..literal(45) }).isTrue()
     }
+
+    @Test
+    fun `overlaps with open-ended ranges`() = transactionalTest(db) {
+        // Inclusive expression range against open-ended ranges
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlaps (35..<40) }).isTrue()
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlaps (45..<50) }).isTrue()
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlaps (30..<35) }).isFalse()
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlaps (46..<50) }).isFalse()
+
+        // Exclusive expression range against open-ended ranges
+        assertThat(evaluateExpression<Boolean> { (literal(35)..<literal(45)) overlaps (35..<40) }).isTrue()
+        assertThat(evaluateExpression<Boolean> { (literal(35)..<literal(45)) overlaps (45..<50) }).isFalse() // touches at 45, but open-ended is exclusive
+        assertThat(evaluateExpression<Boolean> { (literal(35)..<literal(45)) overlaps (30..<35) }).isFalse()
+    }
+
+    @Test
+    fun `overlapsClosed with closed ranges`() = transactionalTest(db) {
+        // Inclusive expression range against closed ranges
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlapsClosed (35..40) }).isTrue()
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlapsClosed (45..50) }).isTrue() // overlap at 45
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlapsClosed (30..34) }).isFalse()
+        assertThat(evaluateExpression<Boolean> { (literal(35)..literal(45)) overlapsClosed (46..50) }).isFalse()
+
+        // Exclusive expression range against closed ranges
+        assertThat(evaluateExpression<Boolean> { (literal(35)..<literal(45)) overlapsClosed (35..40) }).isTrue()
+        assertThat(evaluateExpression<Boolean> { (literal(35)..<literal(45)) overlapsClosed (45..50) }).isFalse() // touches at 45, but exclusive end
+        assertThat(evaluateExpression<Boolean> { (literal(35)..<literal(45)) overlapsClosed (44..50) }).isTrue()
+    }
 }

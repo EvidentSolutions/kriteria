@@ -51,3 +51,23 @@ public infix fun <T : Comparable<T>> KrExpression<T>.between(range: ClosedRange<
 context(_: KrExpressionContext)
 public infix fun <T : Comparable<T>> KrExpression<T>.isInRange(range: OpenEndRange<T>): KrPredicate =
     and(this isGreaterThanOrEqualTo range.start, this isLessThan range.endExclusive)
+
+/** Checks if this inclusive expression range overlaps with the given open-ended range */
+context(ctx: KrExpressionContext)
+public infix fun <T : Comparable<T>> InclusiveExpressionRange<T>.overlaps(range: OpenEndRange<T>): KrPredicate =
+    and(start isLessThan range.endExclusive, endInclusive isGreaterThanOrEqualTo range.start)
+
+/** Checks if this exclusive expression range overlaps with the given open-ended range */
+context(ctx: KrExpressionContext)
+public infix fun <T : Comparable<T>> ExclusiveExpressionRange<T>.overlaps(range: OpenEndRange<T>): KrPredicate =
+    and(start isLessThan range.endExclusive, endExclusive isGreaterThan range.start)
+
+/** Checks if this inclusive expression range overlaps with the given closed range */
+context(ctx: KrExpressionContext)
+public infix fun <T : Comparable<T>> InclusiveExpressionRange<T>.overlapsClosed(range: ClosedRange<T>): KrPredicate =
+    and(start isLessThanOrEqualTo range.endInclusive, endInclusive isGreaterThanOrEqualTo range.start)
+
+/** Checks if this exclusive expression range overlaps with the given closed range */
+context(ctx: KrExpressionContext)
+public infix fun <T : Comparable<T>> ExclusiveExpressionRange<T>.overlapsClosed(range: ClosedRange<T>): KrPredicate =
+    and(start isLessThanOrEqualTo range.endInclusive, endExclusive isGreaterThan range.start)
