@@ -1,9 +1,9 @@
 [versions]
-kotlin = "2.2.0"
-ksp = "2.2.0-2.0.2"
+kotlin = "2.3.0"
+ksp = "2.3.4"
 hibernate = "7.1.8.Final"
 kotlinpoet = "2.2.0"
-testcontainers = "1.21.1"
+testcontainers = "2.0.2"
 postgresqlJdbc = "42.7.5"
 log4j = "2.24.3"
 junit = "5.10.1"
@@ -18,7 +18,7 @@ hibernate-core = { module = "org.hibernate.orm:hibernate-core", version.ref = "h
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
-testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 postgresql-jdbc = { module = "org.postgresql:postgresql", version.ref = "postgresqlJdbc" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }

@@ -67,7 +67,7 @@ class JoinTest(private val db: DatabaseContext, private val data: DefaultTestDat
         fun `inner join drops null rows`() = transactionalTest(db) {
             val employeeIds = em.findAll<Employee> {
                 val e = from(Employee)
-                innerJoin(e.manager)
+                val _ = innerJoin(e.manager)
                 select(e)
             }.map { it.id }
 
@@ -89,7 +89,7 @@ class JoinTest(private val db: DatabaseContext, private val data: DefaultTestDat
         fun `left join does not drop null rows`() = transactionalTest(db) {
             val employeeIds = em.findAll<Employee> {
                 val e = from(Employee)
-                leftJoin(e.manager)
+                val _ = leftJoin(e.manager)
                 select(e)
             }.map { it.id }
 

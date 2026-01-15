@@ -17,16 +17,16 @@ class UpdateTest(private val db: DatabaseContext, private val data: DefaultTestD
     fun update() = testWithDatabaseContext(db) {
         transactionally {
             // This should update the existing row
-            em.update(Employee) {
+            assertThat(em.update(Employee) {
                 set(it.name, "Fred Bar")
                 where(it.department.name isEqualTo data.acmeHr.name)
-            }
+            }).isEqualTo(1)
 
             // This should not touch the row
-            em.update(Employee) {
+            assertThat(em.update(Employee) {
                 set(it.name, "Fred Baz")
                 where(alwaysFalse(), alwaysTrue())
-            }
+            }).isEqualTo(0)
         }
 
         transactionally {

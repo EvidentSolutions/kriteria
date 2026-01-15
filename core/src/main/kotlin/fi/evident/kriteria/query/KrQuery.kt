@@ -23,6 +23,7 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
      * Create a fetch join to the specified attribute using an inner join.
      */
     context(_: KrExpressionContext)
+    @IgnorableReturnValue
     public fun <Y> fetch(path: KrEntityRef<Y>): KrJoin<*, Y> =
         join(path, KrJoinType.INNER, true)
 
@@ -30,6 +31,7 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
      * Create a fetch join to the specified attribute using a left join.
      */
     context(_: KrExpressionContext)
+    @IgnorableReturnValue
     public fun <Y> fetchOptional(path: KrEntityRef<Y>): KrJoin<*, Y> =
         join(path, KrJoinType.LEFT, fetch = true)
 
@@ -37,6 +39,7 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
      * Create a fetch join to the specified attribute using an inner join.
      */
     context(_: KrExpressionContext)
+    @IgnorableReturnValue
     public fun <Y> fetchSet(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
         joinSet(path, KrJoinType.INNER, fetch = true)
 
@@ -44,6 +47,7 @@ public class KrQueryBuilder<T> internal constructor() : KrQueryOrSubqueryBuilder
      * Create a fetch join to the specified attribute using a left join.
      */
     context(_: KrExpressionContext)
+    @IgnorableReturnValue
     public fun <Y> fetchSetOptional(path: KrCollectionRef<Y>): KrSetJoin<*, Y> =
         joinSet(path, KrJoinType.LEFT, fetch = true)
 

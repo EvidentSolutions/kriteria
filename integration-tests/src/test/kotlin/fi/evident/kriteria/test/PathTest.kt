@@ -16,7 +16,7 @@ class PathTest(private val db: DatabaseContext) {
 
     @Test
     fun `check string representations of paths`() = transactionalTest(db) {
-        em.findAll<Department> {
+        val _ = em.findAll<Department> {
             val d = from(Department)
             select(d)
 
@@ -40,7 +40,7 @@ class PathTest(private val db: DatabaseContext) {
 
     @Test
     fun `get properties by KProperty reference`() = transactionalTest(db) {
-        em.findAll<Employee> {
+        val _ = em.findAll<Employee> {
             val e = from(Employee)
             select(e)
 

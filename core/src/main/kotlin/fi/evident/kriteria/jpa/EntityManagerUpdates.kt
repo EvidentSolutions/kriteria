@@ -16,6 +16,7 @@ import jakarta.persistence.EntityManager
  *
  * @return the number of entities updated.
  */
+@IgnorableReturnValue
 public fun <T : Any> EntityManager.update(
     entityMeta: EntityMeta<T, *>,
     callback: context(KrExpressionContext, KrSubQueryContext) KrUpdateBuilder<T>.(KrRoot<T>) -> Unit,
@@ -37,6 +38,7 @@ public fun <T : Any> EntityManager.update(
  *
  * @return the number of entities deleted.
  */
+@IgnorableReturnValue
 public fun <T : Any> EntityManager.delete(
     entityMeta: EntityMeta<T, *>,
     predicate: context(KrExpressionContext, KrSubQueryContext) (KrRoot<T>) -> KrPredicate,

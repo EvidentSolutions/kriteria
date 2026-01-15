@@ -19,7 +19,7 @@ class AggregateQueriesTest(private val db: DatabaseContext, private val data: De
     @Test
     fun `count query`() = transactionalTest(db) {
         val count = em.findSingle<Long> {
-            from(Employee)
+            val _ = from(Employee)
             select(count())
         }
 
@@ -61,7 +61,7 @@ class AggregateQueriesTest(private val db: DatabaseContext, private val data: De
     @Test
     fun `sum as double`() = transactionalTest(db) {
         val totalSalary = em.findSingle<Double> {
-            from(Employee)
+            val _ = from(Employee)
             select(sumAsDouble(literal(0.1f)))
         }
 

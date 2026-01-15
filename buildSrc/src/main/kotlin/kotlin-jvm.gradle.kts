@@ -12,6 +12,7 @@ kotlin {
 
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
+        freeCompilerArgs.add("-Xreturn-value-checker=full")
     }
 }
 

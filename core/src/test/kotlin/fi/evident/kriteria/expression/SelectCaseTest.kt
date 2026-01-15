@@ -8,7 +8,7 @@ class SelectCaseTest {
 
     @Test
     fun `it is not allowed to call otherwise multiple times`() = withTestExpressionContext {
-        selectCase {
+        val _ = selectCase {
             whenCase(alwaysTrue(), 1)
             otherwise(123)
 
@@ -29,7 +29,7 @@ class SelectCaseTest {
 
     @Test
     fun `otherwise is optional`() = withTestExpressionContext {
-        selectCase {
+        val _ = selectCase {
             whenCase(alwaysTrue(), 1)
         }
     }
