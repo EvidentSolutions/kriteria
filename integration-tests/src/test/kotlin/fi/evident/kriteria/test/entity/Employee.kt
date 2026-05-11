@@ -28,5 +28,11 @@ class Employee(
     @OneToMany
     val projectsByName = mutableMapOf<String, Project>()
 
+    @ElementCollection
+    val nicknames = mutableSetOf<String>()
+
+    @ElementCollection
+    val attributes = mutableMapOf<String, String>()
+
     companion object : EntityMeta<Employee, Int>(Employee::id)
 }
