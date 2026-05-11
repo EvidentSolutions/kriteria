@@ -41,6 +41,8 @@ class DefaultTestData private constructor() {
             persistAll(projectRoles)
 
             john.projectRoles[skynet] = salesManager
+            john.nicknames += listOf("JC", "The Chosen One")
+            john.attributes["role"] = "hero"
 
             persistAll(employees)
 
