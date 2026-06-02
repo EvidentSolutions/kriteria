@@ -1,0 +1,17 @@
+settings:
+  publishing:
+    enabled: true
+    group: fi.evident.kriteria
+    version: 0.0.0-SNAPSHOT
+    mavenCentral:
+      enabled: true
+    signArtifacts: true
+    publishSources: true
+    pom:
+      url: https://github.com/EvidentSolutions/kriteria
+      scm: https://github.com/EvidentSolutions/kriteria.git
+      developers:
+        - name: Juha Komulainen
+      licenses:
+        - name: MIT
+          url: https://opensource.org/license/mit

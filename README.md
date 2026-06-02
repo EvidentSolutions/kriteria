@@ -17,7 +17,7 @@ Add the following dependencies to your Gradle build file:
 
 ```kotlin
 plugins {
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+    id("com.google.devtools.ksp") version "2.3.4"
 }
 
 ksp {
