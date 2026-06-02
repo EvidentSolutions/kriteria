@@ -1,0 +1,13 @@
+product: jvm/lib
+description: A type-safe Kotlin Criteria builder for Hibernate
+apply:
+  - ../shared.module-template.yaml
+  - ../publishing.module-template.yaml
+
+dependencies:
+  - $kotlin.reflect
+  - $libs.hibernate.core
+
+settings:
+  publishing:
+    artifactId: kriteria-core

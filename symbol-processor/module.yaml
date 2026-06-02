@@ -1,0 +1,15 @@
+product: jvm/lib
+description: Symbol processor to generate typed for Kriteria metamodel from JPA classes
+apply:
+  - ../shared.module-template.yaml
+  - ../publishing.module-template.yaml
+
+dependencies:
+  - ../core
+  - $libs.hibernate.core
+  - $libs.kotlinpoet.ksp
+  - $libs.ksp.api
+
+settings:
+  publishing:
+    artifactId: kriteria-symbol-processor

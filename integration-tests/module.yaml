@@ -1,0 +1,25 @@
+product: jvm/lib
+description: Integration tests for the library
+apply:
+  - ../shared.module-template.yaml
+
+settings:
+  kotlin:
+    ksp:
+      processors:
+        - ../symbol-processor
+      processorOptions:
+        kriteriaProcessorTargetPackage: fi.evident.kriteria.test.gen
+    noArg:
+      enabled: true
+      presets:
+        - jpa
+
+dependencies:
+  - ../core
+  - $libs.hibernate.core
+
+test-dependencies:
+  - $libs.testcontainers.postgresql
+  - $libs.postgresql.jdbc
+  - $libs.log4j.slf4j
